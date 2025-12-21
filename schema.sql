@@ -4,7 +4,8 @@ CREATE TABLE IF NOT EXISTS books (
     isbn TEXT UNIQUE,
     publication_year TEXT,
     format TEXT,
-    date_read TEXT DEFAULT NULL
+    date_read TEXT DEFAULT NULL,
+    categories TEXT
 );
 
 CREATE TABLE IF NOT EXISTS authors (

@@ -7,4 +7,5 @@ def get_book_data(isbn):
     author = data["items"][0]["volumeInfo"]["authors"]
     publication_year = data["items"][0]["volumeInfo"]["publishedDate"]
     format = data["items"][0]["volumeInfo"]["printType"]
-    return title, author, publication_year, format
+    categories = data["items"][0]["volumeInfo"]["categories"][0]
+    return title, author, publication_year, format, categories
