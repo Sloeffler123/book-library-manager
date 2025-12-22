@@ -40,18 +40,34 @@ def add_read_date_to_book():
     date_read = input("Date read (mm/dd/yyyy): \n")
     isbn = input("Isbn: ")
     cursor.execute(f"UPDATE {BOOK_TABLE_NAME} SET {BOOK_DATE_READ_COLUMN_NAME} = ? WHERE {BOOK_ISBN_COLUMN} = ?", (date_read, isbn,))
+    commit_and_close_connection(connection)
 
-def add_column_to_table():
-    pass
+def add_column_to_table(table_name, new_column_name, connection_to_db):
+    # ALTER TABLE table ADD COLUMN new_column;
+    cursor = connection_to_db.cursor()
+    cursor.execute(f"ALTER TABLE {table_name} ADD COLUMN {new_column_name}")
+    commit_and_close_connection(connection_to_db)
 
-def update_data_in_table():
-    pass
-
-def remove_data_from_table():
-    pass
+def update_data_in_table(table_name, column_name, data_name_to_replace, new_data_name, connection_to_db):
+    # UPDATE table_name SET column_1 = value_1, column_2 = value2
+    cursor = connection_to_db.cursor()
+    cursor.execute(f"UPDATE {table_name} SET {column_name} = ? WHERE {column_name} = ?", (new_data_name, data_name_to_replace,))
+    commit_and_close_connection(connection_to_db)
+    
+def remove_data_from_table(table_name, column_name, data_name, connection_to_db):
+    # DELETE FROM table WHERE column_name = data;
+    cursor = connection_to_db.cursor()
+    user_response = input(f"Are you sure you want to delete {data_name} from {table_name} in {column_name}? : (Y or N) ")
+    if user_response:
+        cursor.execute(f"DELETE FROM {table_name} WHERE {column_name} = ?", (data_name,))
+        commit_and_close_connection(connection_to_db)
 
 def filter_by_category():
     pass
 
 def filter_by_author():
     pass
+
+def commit_and_close_connection(connection_to_db):
+    connection_to_db.commit()
+    connection_to_db.close()
