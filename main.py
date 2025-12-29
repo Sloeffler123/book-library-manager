@@ -2,7 +2,7 @@ from sql_commands import init_connection_to_sql
 from write_to_sql import push_author_data, push_book_data, push_authors_books_data
 from barcode import scan_code
 from google_api import get_book_data
-from sql_commands import AUTHOR_TABLE_NAME, AUTHOR_NAME_COLUMN, BOOK_TABLE_NAME, BOOK_NAME_COLUMN, BOOK_ISBN_COLUMN, BOOK_PUBLICATION_YEAR_COLUMN_NAME, BOOK_FORMAT_COLUMN_NAME, BOOK_DATE_READ_COLUMN_NAME, BOOK_CATEGORIES_COLUMN_NAME, AUTHOR_BOOKS_TABLE_NAME, AUTHOR_ID_COLUMN_NAME, BOOK_ID_COLUMN_NAME
+from constants import AUTHOR_TABLE_NAME, AUTHOR_NAME_COLUMN, BOOK_TABLE_NAME, BOOK_NAME_COLUMN, BOOK_ISBN_COLUMN, BOOK_PUBLICATION_YEAR_COLUMN_NAME, BOOK_FORMAT_COLUMN_NAME, BOOK_DATE_READ_COLUMN_NAME, BOOK_CATEGORIES_COLUMN_NAME, AUTHOR_BOOKS_TABLE_NAME, AUTHOR_ID_COLUMN_NAME, BOOK_ID_COLUMN_NAME
 
 
 def main():
@@ -15,3 +15,8 @@ def main():
     connection.close()
 main()
 
+# make testing
+# export to a csv file
+# fix crud commands
+# sort books by algorithm
+# use plotly to see when i read book
