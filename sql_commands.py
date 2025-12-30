@@ -1,5 +1,5 @@
 import sqlite3
-from constants import DATA_BASE, AUTHOR_TABLE_NAME, AUTHOR_NAME_COLUMN, AUTHOR_BOOKS_TABLE_NAME, AUTHOR_ID_COLUMN_NAME, BOOK_CATEGORIES_COLUMN_NAME, BOOK_DATE_READ_COLUMN_NAME, BOOK_FORMAT_COLUMN_NAME, BOOK_ID_COLUMN_NAME, BOOK_ISBN_COLUMN, BOOK_NAME_COLUMN,BOOK_PUBLICATION_YEAR_COLUMN_NAME,BOOK_TABLE_NAME
+from constants import DATA_BASE, AUTHOR_TABLE_NAME, AUTHOR_NAME_COLUMN, AUTHOR_BOOKS_TABLE_NAME, AUTHOR_ID_COLUMN_NAME, BOOK_CATEGORIES_COLUMN_NAME, BOOK_DATE_READ_COLUMN_NAME, BOOK_FORMAT_COLUMN_NAME, BOOK_ID_COLUMN_NAME, BOOK_ISBN_COLUMN, BOOK_NAME_COLUMN,BOOK_PUBLICATION_YEAR_COLUMN_NAME,BOOK_TABLE_NAME, AUTHOR_BOOKS_AUTHOR_ID, AUTHOR_BOOKS_BOOK_ID
 from write_to_sql import push_book_data, push_author_data, push_authors_books_data
 
 def init_connection_to_sql():
@@ -63,13 +63,33 @@ def remove_data_from_table(table_name, column_name, data_name, connection_to_db)
 
 def filter_data_by_book_name_and_author(book_table_name, author_table_name, book_column_name, author_column_name, authors_books_table_name, book_id_column, author_id_column, author_books_book_id_column, author_books_author_id_column, connection_to_db):
     cursor = connection_to_db.cursor()
-    sql = (
-        f"SELECT b.{book_column_name}, a.{author_column_name} "
-        f"FROM {book_table_name} AS b "
-        f"INNER JOIN {authors_books_table_name} AS ab ON b.{book_id_column} = ab.{author_books_book_id_column} "
-        f"INNER JOIN {author_table_name} AS a ON ab.{author_books_author_id_column} = a.{author_id_column} "
-        f"ORDER BY b.{book_column_name}, a.{author_column_name}"
-    )
+    sql = f"""
+        SELECT b.{book_column_name}, a.{author_column_name} 
+        FROM {book_table_name} AS b 
+        INNER JOIN {authors_books_table_name} AS ab ON b.{book_id_column} = ab.{author_books_book_id_column} 
+        INNER JOIN {author_table_name} AS a ON ab.{author_books_author_id_column} = a.{author_id_column} 
+        ORDER BY a.{author_column_name}, b.{book_column_name}"""
     cursor.execute(sql)
-    return cursor.fetchall()
-    
+    data = cursor.fetchall()
+    for i in data:
+        print(i)
+    return data
+
+def filter_data_by_category_book_name_and_author_name(book_table_name, author_table_name, author_books_table_name, book_name_column, author_name_column, categories_column, book_id_column, author_id_column, author_books_book_id_column, author_books_author_id_column, db_conneciton):
+    cursor = db_conneciton.cursor()
+    sql = f"""
+        SELECT b.{book_name_column}, a.{author_name_column}, b.{categories_column} 
+        FROM {book_table_name} AS b 
+        INNER JOIN {author_books_table_name} AS ab ON b.{book_id_column} = ab.{author_books_book_id_column} 
+        INNER JOIN {author_table_name} AS a ON ab.{author_books_author_id_column} = a.{author_id_column} 
+        ORDER BY b.{categories_column}, a.{author_name_column}, b.{book_name_column}"""
+    cursor.execute(sql)
+    data = cursor.fetchall()
+    for i in data:
+        print(i)
+    return data
+
+
+# filter_data_by_book_name_and_author(BOOK_TABLE_NAME, AUTHOR_TABLE_NAME, BOOK_NAME_COLUMN, AUTHOR_NAME_COLUMN, AUTHOR_BOOKS_TABLE_NAME, BOOK_ID_COLUMN_NAME, AUTHOR_ID_COLUMN_NAME, AUTHOR_BOOKS_BOOK_ID, AUTHOR_BOOKS_AUTHOR_ID, init_connection_to_sql())
+
+filter_data_by_category_book_name_and_author_name(BOOK_TABLE_NAME, AUTHOR_TABLE_NAME, AUTHOR_BOOKS_TABLE_NAME, BOOK_NAME_COLUMN, AUTHOR_NAME_COLUMN, BOOK_CATEGORIES_COLUMN_NAME, BOOK_ID_COLUMN_NAME, AUTHOR_ID_COLUMN_NAME, AUTHOR_BOOKS_BOOK_ID, AUTHOR_BOOKS_AUTHOR_ID, init_connection_to_sql())
