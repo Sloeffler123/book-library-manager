@@ -1,4 +1,5 @@
 import sqlite3
+import pandas as pd
 from constants import DATA_BASE, AUTHOR_TABLE_NAME, AUTHOR_NAME_COLUMN, AUTHOR_BOOKS_TABLE_NAME, AUTHOR_ID_COLUMN_NAME, BOOK_CATEGORIES_COLUMN_NAME, BOOK_DATE_READ_COLUMN_NAME, BOOK_FORMAT_COLUMN_NAME, BOOK_ID_COLUMN_NAME, BOOK_ISBN_COLUMN, BOOK_NAME_COLUMN,BOOK_PUBLICATION_YEAR_COLUMN_NAME,BOOK_TABLE_NAME, AUTHOR_BOOKS_AUTHOR_ID, AUTHOR_BOOKS_BOOK_ID
 from write_to_sql import push_book_data, push_author_data, push_authors_books_data
 
@@ -89,7 +90,22 @@ def filter_data_by_category_book_name_and_author_name(book_table_name, author_ta
         print(i)
     return data
 
-
+def export_all_data_to_csv(book_table_name, author_table_name, author_books_table_name, book_id_column, book_name_column, book_isbn_column, book_publication_year_column, book_format_column, book_date_read_column, book_categories_column, author_id_column, author_name_column, authors_books_author_id_column, authors_books_book_id_column, db_connection):
+    cursor = db_connection.cursor()
+    sql = f"""
+        SELECT b.{book_name_column}, a.{author_name_column}, b.{book_categories_column}, b.{book_format_column}, b.{book_isbn_column}, b.{book_publication_year_column}, b.{book_date_read_column}
+        FROM {book_table_name} AS b 
+        INNER JOIN {author_books_table_name} AS ab ON b.{book_id_column} = ab.{authors_books_book_id_column} 
+        INNER JOIN {author_table_name} AS a ON ab.{authors_books_author_id_column} = a.{author_id_column} 
+        """
+    cursor.execute(sql)
+    data = cursor.fetchall()
+    df = pd.DataFrame(data)
+    df.columns = ["Title", "Author", "Category", "Format", "ISBN", "Publication Year", "Date Read"]
+    df.to_csv("library_book_data.csv", index=False)
+    
 # filter_data_by_book_name_and_author(BOOK_TABLE_NAME, AUTHOR_TABLE_NAME, BOOK_NAME_COLUMN, AUTHOR_NAME_COLUMN, AUTHOR_BOOKS_TABLE_NAME, BOOK_ID_COLUMN_NAME, AUTHOR_ID_COLUMN_NAME, AUTHOR_BOOKS_BOOK_ID, AUTHOR_BOOKS_AUTHOR_ID, init_connection_to_sql())
 
-filter_data_by_category_book_name_and_author_name(BOOK_TABLE_NAME, AUTHOR_TABLE_NAME, AUTHOR_BOOKS_TABLE_NAME, BOOK_NAME_COLUMN, AUTHOR_NAME_COLUMN, BOOK_CATEGORIES_COLUMN_NAME, BOOK_ID_COLUMN_NAME, AUTHOR_ID_COLUMN_NAME, AUTHOR_BOOKS_BOOK_ID, AUTHOR_BOOKS_AUTHOR_ID, init_connection_to_sql())
+# filter_data_by_category_book_name_and_author_name(BOOK_TABLE_NAME, AUTHOR_TABLE_NAME, AUTHOR_BOOKS_TABLE_NAME, BOOK_NAME_COLUMN, AUTHOR_NAME_COLUMN, BOOK_CATEGORIES_COLUMN_NAME, BOOK_ID_COLUMN_NAME, AUTHOR_ID_COLUMN_NAME, AUTHOR_BOOKS_BOOK_ID, AUTHOR_BOOKS_AUTHOR_ID, init_connection_to_sql())
+
+# export_all_data_to_csv(BOOK_TABLE_NAME, AUTHOR_TABLE_NAME, AUTHOR_BOOKS_TABLE_NAME, BOOK_ID_COLUMN_NAME, BOOK_NAME_COLUMN, BOOK_ISBN_COLUMN, BOOK_PUBLICATION_YEAR_COLUMN_NAME, BOOK_FORMAT_COLUMN_NAME, BOOK_DATE_READ_COLUMN_NAME, BOOK_CATEGORIES_COLUMN_NAME, AUTHOR_ID_COLUMN_NAME, AUTHOR_NAME_COLUMN, AUTHOR_BOOKS_AUTHOR_ID, AUTHOR_BOOKS_BOOK_ID, init_connection_to_sql())
