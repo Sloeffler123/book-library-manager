@@ -19,9 +19,9 @@ def add_book_manually(connection_to_db):
     format = input("Format (Digital, BOOK): \n")
     date_read = input("Date read (mm/dd/yyyy, NULL): \n")
     categories = input("Categories (Fiction, Nonfiction): \n")
-    push_author_data(new_author_lst, AUTHOR_TABLE_NAME, AUTHOR_NAME_COLUMN, connection_to_db)
-    push_book_data(book_name, isbn, publication_year, format, date_read, categories, BOOK_TABLE_NAME, BOOK_NAME_COLUMN, BOOK_ISBN_COLUMN, BOOK_PUBLICATION_YEAR_COLUMN_NAME, BOOK_FORMAT_COLUMN_NAME, BOOK_DATE_READ_COLUMN_NAME, BOOK_CATEGORIES_COLUMN_NAME, connection_to_db)
-    push_authors_books_data(new_author_lst, isbn, AUTHOR_BOOKS_TABLE_NAME, AUTHOR_NAME_COLUMN, AUTHOR_ID_COLUMN_NAME, BOOK_ISBN_COLUMN, BOOK_ID_COLUMN_NAME, AUTHOR_TABLE_NAME, BOOK_TABLE_NAME, connection_to_db)
+    push_author_data(new_author_lst, connection_to_db)
+    push_book_data(book_name, isbn, publication_year, format, date_read, categories, connection_to_db)
+    push_authors_books_data(new_author_lst, isbn, connection_to_db)
 
 def check_for_multiple_authors_helper(authors):
     if "," in authors:
@@ -90,7 +90,6 @@ def filter_data_by_category_book_name_and_author_name(db_conneciton):
         print(i)
     return data
 
-# create a filter that gets the title, author, review, date read
 def filter_title_author_review_date_read(db_connection):
     cursor = db_connection.cursor()
     sql = f"""
@@ -116,9 +115,3 @@ def export_all_data_to_csv(db_connection):
     df = pd.DataFrame(data)
     df.columns = ["Title", "Author", "Category", "Format", "ISBN", "Publication Year", "Date Read"]
     df.to_csv("library_book_data.csv", index=False)
-    
-# filter_data_by_book_name_and_author(BOOK_TABLE_NAME, AUTHOR_TABLE_NAME, BOOK_NAME_COLUMN, AUTHOR_NAME_COLUMN, AUTHOR_BOOKS_TABLE_NAME, BOOK_ID_COLUMN_NAME, AUTHOR_ID_COLUMN_NAME, AUTHOR_BOOKS_BOOK_ID, AUTHOR_BOOKS_AUTHOR_ID, init_connection_to_sql())
-
-# filter_data_by_category_book_name_and_author_name(BOOK_TABLE_NAME, AUTHOR_TABLE_NAME, AUTHOR_BOOKS_TABLE_NAME, BOOK_NAME_COLUMN, AUTHOR_NAME_COLUMN, BOOK_CATEGORIES_COLUMN_NAME, BOOK_ID_COLUMN_NAME, AUTHOR_ID_COLUMN_NAME, AUTHOR_BOOKS_BOOK_ID, AUTHOR_BOOKS_AUTHOR_ID, init_connection_to_sql())
-
-# export_all_data_to_csv(BOOK_TABLE_NAME, AUTHOR_TABLE_NAME, AUTHOR_BOOKS_TABLE_NAME, BOOK_ID_COLUMN_NAME, BOOK_NAME_COLUMN, BOOK_ISBN_COLUMN, BOOK_PUBLICATION_YEAR_COLUMN_NAME, BOOK_FORMAT_COLUMN_NAME, BOOK_DATE_READ_COLUMN_NAME, BOOK_CATEGORIES_COLUMN_NAME, AUTHOR_ID_COLUMN_NAME, AUTHOR_NAME_COLUMN, AUTHOR_BOOKS_AUTHOR_ID, AUTHOR_BOOKS_BOOK_ID, init_connection_to_sql())
