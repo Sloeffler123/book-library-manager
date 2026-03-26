@@ -1,6 +1,6 @@
 import sqlite3
 import pandas as pd
-from constants import DATA_BASE, AUTHOR_TABLE_NAME, AUTHOR_NAME_COLUMN, AUTHOR_BOOKS_TABLE_NAME, AUTHOR_ID_COLUMN_NAME, BOOK_CATEGORIES_COLUMN_NAME, BOOK_DATE_READ_COLUMN_NAME, BOOK_FORMAT_COLUMN_NAME, BOOK_ID_COLUMN_NAME, BOOK_ISBN_COLUMN, BOOK_NAME_COLUMN,BOOK_PUBLICATION_YEAR_COLUMN_NAME,BOOK_TABLE_NAME, AUTHOR_BOOKS_AUTHOR_ID, AUTHOR_BOOKS_BOOK_ID
+from constants import DATA_BASE, AUTHOR_TABLE_NAME, AUTHOR_NAME_COLUMN, AUTHOR_BOOKS_TABLE_NAME, AUTHOR_ID_COLUMN_NAME, BOOK_CATEGORIES_COLUMN_NAME, BOOK_DATE_READ_COLUMN_NAME, BOOK_FORMAT_COLUMN_NAME, BOOK_ID_COLUMN_NAME, BOOK_ISBN_COLUMN, BOOK_NAME_COLUMN,BOOK_PUBLICATION_YEAR_COLUMN_NAME,BOOK_TABLE_NAME, AUTHOR_BOOKS_AUTHOR_ID, AUTHOR_BOOKS_BOOK_ID, BOOK_REVIEW_COLUMN_NAME
 from write_to_sql import push_book_data, push_author_data, push_authors_books_data
 
 def init_connection_to_sql():
@@ -45,9 +45,9 @@ def add_read_date_to_book(connection_to_db):
         cursor.execute(f"UPDATE {BOOK_TABLE_NAME} SET {BOOK_DATE_READ_COLUMN_NAME} = ? WHERE {BOOK_NAME_COLUMN} = ?", (date_read, user_input,))
     connection_to_db.commit()
 
-def add_column_to_table(table_name, new_column_name, connection_to_db):
+def add_column_to_table(new_column_name, connection_to_db):
     cursor = connection_to_db.cursor()
-    cursor.execute(f"ALTER TABLE {table_name} ADD COLUMN {new_column_name}")
+    cursor.execute(f"ALTER TABLE {BOOK_TABLE_NAME} ADD COLUMN {new_column_name}")
     connection_to_db.commit()
 
 def update_data_in_table(table_name, column_name, data_name_to_replace, new_data_name, connection_to_db):
@@ -62,41 +62,54 @@ def remove_data_from_table(table_name, column_name, data_name, connection_to_db)
         cursor.execute(f"DELETE FROM {table_name} WHERE {column_name} = ?", (data_name,))
         connection_to_db.commit()
 
-def filter_data_by_book_name_and_author(book_table_name, author_table_name, book_column_name, author_column_name, authors_books_table_name, book_id_column, author_id_column, author_books_book_id_column, author_books_author_id_column, connection_to_db):
+def filter_data_by_book_name_and_author(connection_to_db):
     cursor = connection_to_db.cursor()
     sql = f"""
-        SELECT b.{book_column_name}, a.{author_column_name} 
-        FROM {book_table_name} AS b 
-        INNER JOIN {authors_books_table_name} AS ab ON b.{book_id_column} = ab.{author_books_book_id_column} 
-        INNER JOIN {author_table_name} AS a ON ab.{author_books_author_id_column} = a.{author_id_column} 
-        ORDER BY a.{author_column_name}, b.{book_column_name}"""
+        SELECT b.{BOOK_NAME_COLUMN}, a.{AUTHOR_NAME_COLUMN} 
+        FROM {BOOK_TABLE_NAME} AS b 
+        INNER JOIN {AUTHOR_BOOKS_TABLE_NAME} AS ab ON b.{BOOK_ID_COLUMN_NAME} = ab.{AUTHOR_BOOKS_BOOK_ID} 
+        INNER JOIN {AUTHOR_TABLE_NAME} AS a ON ab.{AUTHOR_BOOKS_AUTHOR_ID} = a.{AUTHOR_ID_COLUMN_NAME} 
+        ORDER BY a.{AUTHOR_NAME_COLUMN}, b.{BOOK_NAME_COLUMN}"""
     cursor.execute(sql)
     data = cursor.fetchall()
     for i in data:
         print(i)
     return data
 
-def filter_data_by_category_book_name_and_author_name(book_table_name, author_table_name, author_books_table_name, book_name_column, author_name_column, categories_column, book_id_column, author_id_column, author_books_book_id_column, author_books_author_id_column, db_conneciton):
+def filter_data_by_category_book_name_and_author_name(db_conneciton):
     cursor = db_conneciton.cursor()
     sql = f"""
-        SELECT b.{book_name_column}, a.{author_name_column}, b.{categories_column} 
-        FROM {book_table_name} AS b 
-        INNER JOIN {author_books_table_name} AS ab ON b.{book_id_column} = ab.{author_books_book_id_column} 
-        INNER JOIN {author_table_name} AS a ON ab.{author_books_author_id_column} = a.{author_id_column} 
-        ORDER BY b.{categories_column}, a.{author_name_column}, b.{book_name_column}"""
+        SELECT b.{BOOK_NAME_COLUMN}, a.{AUTHOR_NAME_COLUMN}, b.{BOOK_CATEGORIES_COLUMN_NAME} 
+        FROM {BOOK_TABLE_NAME} AS b 
+        INNER JOIN {AUTHOR_BOOKS_TABLE_NAME} AS ab ON b.{BOOK_ID_COLUMN_NAME} = ab.{AUTHOR_BOOKS_BOOK_ID} 
+        INNER JOIN {AUTHOR_TABLE_NAME} AS a ON ab.{AUTHOR_BOOKS_AUTHOR_ID} = a.{AUTHOR_ID_COLUMN_NAME} 
+        ORDER BY b.{BOOK_CATEGORIES_COLUMN_NAME}, a.{AUTHOR_NAME_COLUMN}, b.{BOOK_NAME_COLUMN}"""
     cursor.execute(sql)
     data = cursor.fetchall()
     for i in data:
         print(i)
     return data
 
-def export_all_data_to_csv(book_table_name, author_table_name, author_books_table_name, book_id_column, book_name_column, book_isbn_column, book_publication_year_column, book_format_column, book_date_read_column, book_categories_column, author_id_column, author_name_column, authors_books_author_id_column, authors_books_book_id_column, db_connection):
+# create a filter that gets the title, author, review, date read
+def filter_title_author_review_date_read(db_connection):
     cursor = db_connection.cursor()
     sql = f"""
-        SELECT b.{book_name_column}, a.{author_name_column}, b.{book_categories_column}, b.{book_format_column}, b.{book_isbn_column}, b.{book_publication_year_column}, b.{book_date_read_column}
-        FROM {book_table_name} AS b 
-        INNER JOIN {author_books_table_name} AS ab ON b.{book_id_column} = ab.{authors_books_book_id_column} 
-        INNER JOIN {author_table_name} AS a ON ab.{authors_books_author_id_column} = a.{author_id_column} 
+        SELECT b.{BOOK_NAME_COLUMN}, a.{AUTHOR_NAME_COLUMN} 
+        FROM {BOOK_TABLE_NAME} AS b 
+        INNER JOIN {AUTHOR_BOOKS_TABLE_NAME} AS ab ON b.{BOOK_ID_COLUMN_NAME} = ab.{AUTHOR_BOOKS_BOOK_ID} 
+        INNER JOIN {AUTHOR_TABLE_NAME} AS a ON ab.{AUTHOR_BOOKS_AUTHOR_ID} = a.{AUTHOR_ID_COLUMN_NAME} 
+        ORDER BY b.{BOOK_NAME_COLUMN}, a.{AUTHOR_NAME_COLUMN}, b.{BOOK_REVIEW_COLUMN_NAME}, b.{BOOK_DATE_READ_COLUMN_NAME}"""
+    cursor.execute(sql)
+    data = cursor.fetchall()
+    return data
+
+def export_all_data_to_csv(db_connection):
+    cursor = db_connection.cursor()
+    sql = f"""
+        SELECT b.{BOOK_NAME_COLUMN}, a.{AUTHOR_NAME_COLUMN}, b.{BOOK_CATEGORIES_COLUMN_NAME}, b.{BOOK_FORMAT_COLUMN_NAME}, b.{BOOK_ISBN_COLUMN}, b.{BOOK_PUBLICATION_YEAR_COLUMN_NAME}, b.{BOOK_DATE_READ_COLUMN_NAME}
+        FROM {BOOK_TABLE_NAME} AS b 
+        INNER JOIN {AUTHOR_BOOKS_TABLE_NAME} AS ab ON b.{BOOK_ID_COLUMN_NAME} = ab.{AUTHOR_BOOKS_BOOK_ID} 
+        INNER JOIN {AUTHOR_TABLE_NAME} AS a ON ab.{AUTHOR_BOOKS_AUTHOR_ID} = a.{AUTHOR_ID_COLUMN_NAME} 
         """
     cursor.execute(sql)
     data = cursor.fetchall()
