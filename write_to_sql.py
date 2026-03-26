@@ -1,39 +1,48 @@
 import sqlite3
+from constants import AUTHOR_TABLE_NAME, AUTHOR_NAME_COLUMN, AUTHOR_ID_COLUMN_NAME, AUTHOR_BOOKS_TABLE_NAME, BOOK_TABLE_NAME, BOOK_NAME_COLUMN, BOOK_ISBN_COLUMN, BOOK_ID_COLUMN_NAME, BOOK_PUBLICATION_YEAR_COLUMN_NAME, BOOK_FORMAT_COLUMN_NAME, BOOK_DATE_READ_COLUMN_NAME, BOOK_CATEGORIES_COLUMN_NAME
 
-def push_author_data(author, author_table_name, author_column_name, connection_to_db):
+def push_author_data(author, connection_to_db):
     cursor = connection_to_db.cursor()
     any_inserted = False
     for name in author:
-        try:  
-            cursor.execute(f"INSERT INTO {author_table_name} ({author_column_name}) VALUES (?)", (name,))
+        try:
+            sql = f"""INSERT INTO {AUTHOR_TABLE_NAME} ({AUTHOR_NAME_COLUMN}) VALUES (?)", (name,)"""
+            cursor.execute(sql)
             connection_to_db.commit()
-            print(f"{name} added to {author_table_name}\n")
+            print(f"{name} added to {AUTHOR_TABLE_NAME}\n")
             any_inserted = True
         except sqlite3.IntegrityError:
             print("author already in db")
     return any_inserted
 
-def push_book_data(book_name, isbn_number, publication_year, format, date_read,categories, books_table_name, book_column_name, isbn_colomn_name, publication_year_coulumn_name, format_column_name, date_read_column_name, categories_column_name, connection_to_db):
+def push_book_data(book_name, isbn_number, publication_year, format, date_read, categories, connection_to_db):
     cursor = connection_to_db.cursor()
     try:
-        cursor.execute(f"INSERT INTO {books_table_name} ({book_column_name}, {isbn_colomn_name}, {publication_year_coulumn_name}, {format_column_name}, {date_read_column_name}, {categories_column_name}) VALUES (?, ?, ?, ?, ?, ?)", (book_name, isbn_number, publication_year, format, date_read, categories,))
+        sql = f"""INSERT INTO {BOOK_TABLE_NAME} ({BOOK_NAME_COLUMN}, {BOOK_ISBN_COLUMN}, {BOOK_PUBLICATION_YEAR_COLUMN_NAME}, {BOOK_FORMAT_COLUMN_NAME}, {BOOK_DATE_READ_COLUMN_NAME}, {BOOK_CATEGORIES_COLUMN_NAME}) VALUES (?, ?, ?, ?, ?, ?)", ({book_name}, {isbn_number}, {publication_year}, {format}, {date_read}, {categories},)
+        """
+        cursor.execute(sql)
         connection_to_db.commit()
-        print(f"{book_name} added to {books_table_name}\n")
+        print(f"{book_name} added to {BOOK_TABLE_NAME}\n")
         return True
     except sqlite3.IntegrityError:
         print(f"{book_name} already in db")
         return False
 
-def push_authors_books_data(author_name_list, isbn, author_books_table_name, author_name_column, author_id_column, book_isbn_column, book_id_column, authors_table_name, book_table_name, connection_to_db):
+def push_authors_books_data(author_name_list, isbn, connection_to_db):
     cursor = connection_to_db.cursor()
     for name in author_name_list:
-        cursor.execute(f"SELECT {author_id_column} FROM {authors_table_name} WHERE {author_name_column} = ?", (name,))
+        sql_string = f"""SELECT {AUTHOR_ID_COLUMN_NAME} FROM {AUTHOR_BOOKS_TABLE_NAME} WHERE {AUTHOR_NAME_COLUMN} = ?", ({name},)
+        """
+        cursor.execute(sql_string)
         author_id = cursor.fetchone()[0]
-        cursor.execute(f"SELECT {book_id_column} FROM {book_table_name} WHERE {book_isbn_column} = ?", (isbn,))
+        sql_string_2 = f"""SELECT {BOOK_ID_COLUMN_NAME} FROM {BOOK_TABLE_NAME} WHERE {BOOK_ISBN_COLUMN} = ?", ({isbn},)"""
+        cursor.execute(sql_string_2)
         book_id = cursor.fetchone()[0]
         try:
-            cursor.execute(f"INSERT INTO {author_books_table_name} ({author_id_column}, {book_id_column}) VALUES (?, ?)",  (author_id, book_id,))
-            print(f"book {book_id} and author {author_id} added to {author_books_table_name}\n")
+            sql_string_3 = f"""INSERT INTO {AUTHOR_BOOKS_TABLE_NAME} ({AUTHOR_ID_COLUMN_NAME}, {BOOK_ID_COLUMN_NAME}) VALUES (?, ?)",  ({author_id}, {book_id},)
+            """
+            cursor.execute(sql_string_3)
+            print(f"book {book_id} and author {author_id} added to {AUTHOR_BOOKS_TABLE_NAME}\n")
             connection_to_db.commit()
         except sqlite3.IntegrityError:
             print("Author_id and book_id already exist")
