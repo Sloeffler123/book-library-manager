@@ -50,9 +50,12 @@ def add_column_to_table(new_column_name, connection_to_db):
     cursor.execute(f"ALTER TABLE {BOOK_TABLE_NAME} ADD COLUMN {new_column_name}")
     connection_to_db.commit()
 
-def update_data_in_table(table_name, column_name, data_name_to_replace, new_data_name, connection_to_db):
+def update_data_in_table(table_name, column_to_update, new_value, filter_column, filter_value, connection_to_db):
     cursor = connection_to_db.cursor()
-    cursor.execute(f"UPDATE {table_name} SET {column_name} = ? WHERE {column_name} = ?", (new_data_name, data_name_to_replace,))
+    sql = f"""
+        UPDATE {table_name} SET {column_to_update} = ? WHERE {filter_column} = ?
+        """
+    cursor.execute(sql, (new_value, filter_value))
     connection_to_db.commit()
 
 def remove_data_from_table(table_name, column_name, data_name, connection_to_db):

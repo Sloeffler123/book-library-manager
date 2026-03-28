@@ -4,7 +4,7 @@ from google_api import get_book_data
 from write_to_sql import push_author_data, push_authors_books_data, push_book_data
 from pathlib import Path
 from sql_commands import add_book_manually, add_read_date_to_book, add_column_to_table, update_data_in_table, remove_data_from_table, filter_data_by_book_name_and_author
-from constants import AUTHOR_BOOKS_TABLE_NAME, AUTHOR_NAME_COLUMN, AUTHOR_TABLE_NAME, BOOK_DATE_READ_COLUMN_NAME, BOOK_NAME_COLUMN, BOOK_TABLE_NAME
+from constants import AUTHOR_BOOKS_TABLE_NAME, AUTHOR_NAME_COLUMN, AUTHOR_TABLE_NAME, BOOK_DATE_READ_COLUMN_NAME, BOOK_NAME_COLUMN, BOOK_TABLE_NAME, BOOK_REVIEW_COLUMN_NAME, BOOK_ID_COLUMN_NAME
 
 SCHEMA_PATH = Path(__file__).parent.parent / "schema.sql"
 
@@ -69,12 +69,15 @@ def test_add_column_to_table(db_connection):
 def test_update_data_in_table(db_connection):
     add_book_data_helper(db_connection)
     cursor = db_connection.cursor()
-    new_data = ["Tom Clancy"]
-    data_to_replace = ["Dan Brown"]
-    update_data_in_table(AUTHOR_TABLE_NAME, AUTHOR_NAME_COLUMN, data_to_replace[0], new_data[0], db_connection)
-    cursor.execute(f"SELECT {AUTHOR_NAME_COLUMN} FROM {AUTHOR_TABLE_NAME}")
+    new_data = "Loved this book!"
+    book_id = 1
+    update_data_in_table(BOOK_TABLE_NAME, BOOK_REVIEW_COLUMN_NAME, new_data, BOOK_ID_COLUMN_NAME, book_id, db_connection)
+    sql = f"""SELECT {BOOK_REVIEW_COLUMN_NAME} FROM {BOOK_TABLE_NAME} WHERE {BOOK_ID_COLUMN_NAME} = ?
+    """
+    cursor.execute(sql, (1,))
     result = cursor.fetchone()
-    assert result[0] == new_data[0]
+    print(result)
+    assert result[0] == new_data
 
 def test_remove_data_from_table(db_connection):
     add_book_data_helper(db_connection)
