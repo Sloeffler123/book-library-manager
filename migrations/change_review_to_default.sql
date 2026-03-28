@@ -1,0 +1,1 @@
+UPDATE books SET review = 'Write a review';

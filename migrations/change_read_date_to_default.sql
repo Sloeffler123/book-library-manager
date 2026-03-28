@@ -1,0 +1,1 @@
+UPDATE books SET date_read = 'not set';

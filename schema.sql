@@ -4,9 +4,9 @@ CREATE TABLE IF NOT EXISTS books (
     isbn TEXT UNIQUE,
     publication_year TEXT,
     format TEXT,
-    date_read TEXT DEFAULT NULL,
+    date_read TEXT DEFAULT 'not set',
     categories TEXT,
-    review TEXT
+    review TEXT DEFAULT 'Write a review'
 );
 
 CREATE TABLE IF NOT EXISTS authors (

@@ -116,5 +116,5 @@ def export_all_data_to_csv(db_connection):
     cursor.execute(sql)
     data = cursor.fetchall()
     df = pd.DataFrame(data)
-    df.columns = ["Title", "Author", "Category", "Format", "ISBN", "Publication Year", "Date Read"]
+    df.columns = ["Title", "Author", "Category", "Format", "ISBN", "Publication Year", "Date Read", "Review"]
     df.to_csv("library_book_data.csv", index=False)
