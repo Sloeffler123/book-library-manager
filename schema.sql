@@ -5,7 +5,8 @@ CREATE TABLE IF NOT EXISTS books (
     publication_year TEXT,
     format TEXT,
     date_read TEXT DEFAULT NULL,
-    categories TEXT
+    categories TEXT,
+    review TEXT
 );
 
 CREATE TABLE IF NOT EXISTS authors (
