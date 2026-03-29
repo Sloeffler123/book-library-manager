@@ -89,14 +89,12 @@ def filter_data_by_category_book_name_and_author_name(db_conneciton):
         ORDER BY b.{BOOK_CATEGORIES_COLUMN_NAME}, a.{AUTHOR_NAME_COLUMN}, b.{BOOK_NAME_COLUMN}"""
     cursor.execute(sql)
     data = cursor.fetchall()
-    for i in data:
-        print(i)
     return data
 
 def filter_title_author_review_date_read(db_connection):
     cursor = db_connection.cursor()
     sql = f"""
-        SELECT b.{BOOK_NAME_COLUMN}, a.{AUTHOR_NAME_COLUMN} 
+        SELECT b.{BOOK_NAME_COLUMN}, a.{AUTHOR_NAME_COLUMN}, b.{BOOK_REVIEW_COLUMN_NAME}, b.{BOOK_DATE_READ_COLUMN_NAME}
         FROM {BOOK_TABLE_NAME} AS b 
         INNER JOIN {AUTHOR_BOOKS_TABLE_NAME} AS ab ON b.{BOOK_ID_COLUMN_NAME} = ab.{AUTHOR_BOOKS_BOOK_ID} 
         INNER JOIN {AUTHOR_TABLE_NAME} AS a ON ab.{AUTHOR_BOOKS_AUTHOR_ID} = a.{AUTHOR_ID_COLUMN_NAME} 
@@ -108,7 +106,7 @@ def filter_title_author_review_date_read(db_connection):
 def export_all_data_to_csv(db_connection):
     cursor = db_connection.cursor()
     sql = f"""
-        SELECT b.{BOOK_NAME_COLUMN}, a.{AUTHOR_NAME_COLUMN}, b.{BOOK_CATEGORIES_COLUMN_NAME}, b.{BOOK_FORMAT_COLUMN_NAME}, b.{BOOK_ISBN_COLUMN}, b.{BOOK_PUBLICATION_YEAR_COLUMN_NAME}, b.{BOOK_DATE_READ_COLUMN_NAME}
+        SELECT b.{BOOK_NAME_COLUMN}, a.{AUTHOR_NAME_COLUMN}, b.{BOOK_CATEGORIES_COLUMN_NAME}, b.{BOOK_FORMAT_COLUMN_NAME}, b.{BOOK_ISBN_COLUMN}, b.{BOOK_PUBLICATION_YEAR_COLUMN_NAME}, b.{BOOK_DATE_READ_COLUMN_NAME}, b.{BOOK_REVIEW_COLUMN_NAME}
         FROM {BOOK_TABLE_NAME} AS b 
         INNER JOIN {AUTHOR_BOOKS_TABLE_NAME} AS ab ON b.{BOOK_ID_COLUMN_NAME} = ab.{AUTHOR_BOOKS_BOOK_ID} 
         INNER JOIN {AUTHOR_TABLE_NAME} AS a ON ab.{AUTHOR_BOOKS_AUTHOR_ID} = a.{AUTHOR_ID_COLUMN_NAME} 

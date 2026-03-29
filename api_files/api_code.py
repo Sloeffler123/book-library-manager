@@ -1,19 +1,21 @@
-import sqlite3
-from fastapi import FastAPI, HTTPException
+
+from fastapi import FastAPI, HTTPException, Request
+from fastapi.templating import Jinja2Templates
+
 from enum import IntEnum
 from pydantic import BaseModel, Field
 from sql_commands import init_connection_to_sql, filter_title_author_review_date_read
-from constants import DATA_BASE
+from api_helper_funcs import get_main_page_data
+
 api = FastAPI()
+
+templates = Jinja2Templates(directory="templates")
 
 @api.get('/mybooks')
 def get_main_page():
     # layout
     # title, author, your rating, your review text, date read, remove
     try:
-        conn = init_connection_to_sql()
-        statement = filter_title_author_review_date_read(conn)
-        return {"data": statement[0]}
-        
+        get_main_page_data(init_connection_to_sql())
     except HTTPException:
         print("error")
