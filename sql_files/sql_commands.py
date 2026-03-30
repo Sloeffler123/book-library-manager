@@ -1,7 +1,7 @@
 import sqlite3
 import pandas as pd
 from constants import DATA_BASE, AUTHOR_TABLE_NAME, AUTHOR_NAME_COLUMN, AUTHOR_BOOKS_TABLE_NAME, AUTHOR_ID_COLUMN_NAME, BOOK_CATEGORIES_COLUMN_NAME, BOOK_DATE_READ_COLUMN_NAME, BOOK_FORMAT_COLUMN_NAME, BOOK_ID_COLUMN_NAME, BOOK_ISBN_COLUMN, BOOK_NAME_COLUMN,BOOK_PUBLICATION_YEAR_COLUMN_NAME,BOOK_TABLE_NAME, AUTHOR_BOOKS_AUTHOR_ID, AUTHOR_BOOKS_BOOK_ID, BOOK_REVIEW_COLUMN_NAME
-from write_to_sql import push_book_data, push_author_data, push_authors_books_data
+from sql_files.write_to_sql import push_book_data, push_author_data, push_authors_books_data
 
 def init_connection_to_sql():
     return sqlite3.connect(DATA_BASE)

@@ -1,7 +1,7 @@
 import pytest
 import sqlite3
 from pathlib import Path
-from write_to_sql import push_author_data, push_book_data, push_authors_books_data
+from sql_files.write_to_sql import push_author_data, push_book_data, push_authors_books_data
 from constants import AUTHOR_TABLE_NAME, AUTHOR_BOOKS_TABLE_NAME, BOOK_TABLE_NAME, AUTHOR_NAME_COLUMN
 
 SCHEMA_PATH = Path(__file__).parent.parent / "schema.sql"

@@ -1,9 +1,9 @@
 import sqlite3
 import pytest
 from google_api import get_book_data
-from write_to_sql import push_author_data, push_authors_books_data, push_book_data
+from sql_files.write_to_sql import push_author_data, push_authors_books_data, push_book_data
 from pathlib import Path
-from sql_commands import add_book_manually, add_read_date_to_book, add_column_to_table, update_data_in_table, remove_data_from_table, filter_data_by_book_name_and_author
+from sql_files.sql_commands import add_book_manually, add_read_date_to_book, add_column_to_table, update_data_in_table, remove_data_from_table, filter_data_by_book_name_and_author
 from constants import AUTHOR_BOOKS_TABLE_NAME, AUTHOR_NAME_COLUMN, AUTHOR_TABLE_NAME, BOOK_DATE_READ_COLUMN_NAME, BOOK_NAME_COLUMN, BOOK_TABLE_NAME, BOOK_REVIEW_COLUMN_NAME, BOOK_ID_COLUMN_NAME
 
 SCHEMA_PATH = Path(__file__).parent.parent / "schema.sql"

@@ -3,19 +3,25 @@
             <thead>
             <tr>
               <th scope="col">#</th>
-              <th scope="col">First</th>
-              <th scope="col">Last</th>
-              <th scope="col">Handle</th>
+              <th scope="col">Title</th>
+              <th scope="col">Author</th>
+              <th scope="col">Review</th>
+              <th scope="col">Date read</th>
             </tr>
             </thead>
             <tbody>
-            <tr>
-              <th scope="row">1</th>
-              <td>Title</td>
-              <td>Author</td>
-              <td>Review</td>
-              <td>Date read</td>
-            </tr>
+            {% for key, value in data.items() %}
+              <tr>
+                <td>{{ key }}</td>
+                {% for item in value %}
+                  
+                  <td>{{ value.title }}</td>
+                  <td>{{ value.author }}</td>
+                  <td>{{ value.review }}</td>
+                  <td>{{ value.date_read }}</td>
+                {% endfor %}
+              </tr>
+            {% endfor %}
             <tr>
               <th scope="row">2</th>
               <td>Jacob</td>
