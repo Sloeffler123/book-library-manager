@@ -1,6 +1,6 @@
 import sqlite3
 import pytest
-from google_api import get_book_data
+from api_files.google_api import get_book_data
 from sql_files.write_to_sql import push_author_data, push_authors_books_data, push_book_data
 from pathlib import Path
 from sql_files.sql_commands import add_book_manually, add_read_date_to_book, add_column_to_table, update_data_in_table, remove_data_from_table, filter_data_by_book_name_and_author

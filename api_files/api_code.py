@@ -1,6 +1,7 @@
 
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.templating import Jinja2Templates
+from fastapi.staticfiles import StaticFiles
 
 from enum import IntEnum
 from pydantic import BaseModel, Field
@@ -10,6 +11,8 @@ from api_files.api_helper_funcs import get_main_page_data
 api = FastAPI()
 
 templates = Jinja2Templates(directory="templates")
+
+api.mount("/static", StaticFiles(directory="static"), name="static")
 
 @api.get('/mybooks', include_in_schema=False)
 def get_main_page(request: Request):

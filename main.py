@@ -1,7 +1,7 @@
 from sql_files.sql_commands import init_connection_to_sql
 from sql_files.write_to_sql import push_author_data, push_book_data, push_authors_books_data
 from barcode import scan_code
-from google_api import get_book_data
+from api_files.google_api import get_book_data
 
 def main():
     connection = init_connection_to_sql()

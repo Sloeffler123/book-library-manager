@@ -1,4 +1,7 @@
 <div class="bd-example-snippet bd-code-snippet"> <div class="bd-example m-0 border-0"> 
+  <head>
+    <link rel="stylesheet" href="static/style.css">
+  </head>
           <table class="table table-striped">
             <thead>
             <tr>
@@ -13,26 +16,11 @@
             {% for key, value in data.items() %}
               <tr>
                 <td>{{ key }}</td>
-                {% for item in value %}
-                  
-                  <td>{{ value.title }}</td>
-                  <td>{{ value.author }}</td>
-                  <td>{{ value.review }}</td>
-                  <td>{{ value.date_read }}</td>
-                {% endfor %}
+                <td>{{ value.title }}</td>
+                <td>{{ value.author }}</td>
+                <td>{{ value.review }}</td>
+                <td>{{ value.date_read }}</td>
               </tr>
             {% endfor %}
-            <tr>
-              <th scope="row">2</th>
-              <td>Jacob</td>
-              <td>Thornton</td>
-              <td>@fat</td>
-            </tr>
-            <tr>
-              <th scope="row">3</th>
-              <td>John</td>
-              <td>Doe</td>
-              <td>@social</td>
-            </tr>
             </tbody>
-          </table> </div>  </div>
+          </table>
