@@ -1,7 +1,15 @@
 import requests
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+api_key = os.getenv("API_KEY")
 
 def get_book_data(isbn):
-    response = requests.get(f"https://www.googleapis.com/books/v1/volumes?q=isbn:{isbn}")
+    response = requests.get(
+        f"https://www.googleapis.com/books/v1/volumes?q=isbn:{isbn}&key={api_key}"
+    )
     data = response.json()
     title = data["items"][0]["volumeInfo"]["title"]
     author = data["items"][0]["volumeInfo"]["authors"]
