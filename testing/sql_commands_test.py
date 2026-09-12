@@ -39,12 +39,26 @@ def db_connection():
     connection.close()
 
 
-def test_add_book_manually(db_connection):
+def test_add_book_manually(db_connection, monkeypatch):
     data_books = [
         (1, "Patriot Games", "9780425134351", "1992-05-01", "BOOK", "NULL", "Fiction", "Write a review")
     ]
     data_authors = [(1, "Tom Clancy")]
     data_authors_books = [(1, 1)]
+
+    inputs = iter([
+        "Patriot Games",
+        "Tom Clancy",
+        "9780425134351",
+        "1992-05-01",
+        "BOOK",
+        "NULL",
+        "Fiction",
+        "Write a review"
+    ])
+
+    monkeypatch.setattr("builtins.input", lambda _: next(inputs))
+
     cursor = db_connection.cursor()
     add_book_manually(db_connection)
     cursor.execute(f"SELECT * FROM {BOOK_TABLE_NAME}")
@@ -58,12 +72,26 @@ def test_add_book_manually(db_connection):
     assert author_books_result == data_authors_books
 
 
-def test_add_book_manually_multiple_authors(db_connection):
+def test_add_book_manually_multiple_authors(db_connection, monkeypatch):
     data_books = [
         (1, "Patriot Games", "9780425134351", "1992-05-01", "BOOK", "NULL", "Fiction", "Write a review")
     ]
     data_authors = [(1, "Tom Clancy"), (2, "Sam Fisher")]
     data_authors_books = [(1, 1), (2, 1)]
+
+    inputs = iter([
+            "Patriot Games",
+            "Tom Clancy, Sam Fisher",
+            "9780425134351",
+            "1992-05-01",
+            "BOOK",
+            "NULL",
+            "Fiction",
+            "Write a review"
+        ])
+
+    monkeypatch.setattr("builtins.input", lambda _: next(inputs))
+
     cursor = db_connection.cursor()
     add_book_manually(db_connection)
     cursor.execute(f"SELECT * FROM {BOOK_TABLE_NAME}")
