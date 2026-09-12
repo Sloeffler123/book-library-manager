@@ -2,3 +2,4 @@ users_books.db
 myenv/
 __pycache__/
 .env
+library_book_data.csv
