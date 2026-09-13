@@ -173,9 +173,7 @@ def test_filter_data(db_connection):
 
 
 def add_book_data_helper(db_connection):
-    book_name, author, publication_year, format, categories = get_book_data(
-        "9780552150736"
-    )
+    book_name, author, publication_year, format, categories = "Angels and Demons", ["Dan Brown"], "2001", "BOOK", "Fiction"
     push_author_data(author, db_connection)
     push_book_data(
         book_name,
