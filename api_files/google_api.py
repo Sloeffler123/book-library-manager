@@ -20,5 +20,3 @@ def get_book_data(isbn):
     print(author)
     print(title)
     return title, author, publication_year, format, categories
-
-get_book_data("9780552150736")
