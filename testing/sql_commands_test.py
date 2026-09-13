@@ -105,10 +105,15 @@ def test_add_book_manually_multiple_authors(db_connection, monkeypatch):
     assert author_books_result == data_authors_books
 
 
-def test_add_read_date_to_book(db_connection):
-    data = ["2002"]
+def test_add_read_date_to_book(db_connection, monkeypatch):
+    data = ["2002-05-01"]
     add_book_data_helper(db_connection)
     cursor = db_connection.cursor()
+
+    inputs = iter(["2002-05-01", "I", "9780552150736"])
+
+    monkeypatch.setattr("builtins.input", lambda _: next(inputs))
+
     add_read_date_to_book(db_connection)
     cursor.execute(f"SELECT {BOOK_DATE_READ_COLUMN_NAME} FROM {BOOK_TABLE_NAME}")
     result = cursor.fetchone()
@@ -146,10 +151,13 @@ def test_update_data_in_table(db_connection):
     assert result[0] == new_data
 
 
-def test_remove_data_from_table(db_connection):
+def test_remove_data_from_table(db_connection, monkeypatch):
     add_book_data_helper(db_connection)
     cursor = db_connection.cursor()
     data_to_remove = ["Angels and Demons"]
+
+    monkeypatch.setattr("builtins.input", lambda _: "Y")
+
     remove_data_from_table(
         BOOK_TABLE_NAME, BOOK_NAME_COLUMN, data_to_remove[0], db_connection
     )
@@ -176,6 +184,7 @@ def add_book_data_helper(db_connection):
         format,
         "NULL",
         categories,
+        "Write a review",
         db_connection,
     )
     push_authors_books_data(author, "9780552150736", db_connection)

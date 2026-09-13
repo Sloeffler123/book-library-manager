@@ -13,6 +13,7 @@ from constants import (
     BOOK_NAME_COLUMN,
     BOOK_PUBLICATION_YEAR_COLUMN_NAME,
     BOOK_TABLE_NAME,
+    BOOK_REVIEW_COLUMN_NAME
 )
 
 
@@ -39,15 +40,16 @@ def push_book_data(
     format,
     date_read,
     categories,
+    review,
     connection_to_db,
 ):
     cursor = connection_to_db.cursor()
     try:
-        sql = f"""INSERT INTO {BOOK_TABLE_NAME} ({BOOK_NAME_COLUMN}, {BOOK_ISBN_COLUMN}, {BOOK_PUBLICATION_YEAR_COLUMN_NAME}, {BOOK_FORMAT_COLUMN_NAME}, {BOOK_DATE_READ_COLUMN_NAME}, {BOOK_CATEGORIES_COLUMN_NAME}) VALUES (?, ?, ?, ?, ?, ?)
+        sql = f"""INSERT INTO {BOOK_TABLE_NAME} ({BOOK_NAME_COLUMN}, {BOOK_ISBN_COLUMN}, {BOOK_PUBLICATION_YEAR_COLUMN_NAME}, {BOOK_FORMAT_COLUMN_NAME}, {BOOK_DATE_READ_COLUMN_NAME}, {BOOK_CATEGORIES_COLUMN_NAME}, {BOOK_REVIEW_COLUMN_NAME}) VALUES (?, ?, ?, ?, ?, ?, ?)
         """
         cursor.execute(
             sql,
-            (book_name, isbn_number, publication_year, format, date_read, categories),
+            (book_name, isbn_number, publication_year, format, date_read, categories, review),
         )
         connection_to_db.commit()
         print(f"{book_name} added to {BOOK_TABLE_NAME}\n")

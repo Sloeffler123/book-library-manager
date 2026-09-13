@@ -41,7 +41,7 @@ def test_push_author_data(db_connection):
 def test_push_book_data(db_connection):
     cursor = db_connection.cursor()
     data = [
-        (1, "Patriot Games", "9780425134351", "1992-05-01", "BOOK", "NULL", "Fiction")
+        (1, "Patriot Games", "9780425134351", "1992-05-01", "BOOK", "NULL", "Fiction", "Write a review")
     ]
     push_book_data(
         data[0][1],
@@ -50,6 +50,7 @@ def test_push_book_data(db_connection):
         data[0][4],
         data[0][5],
         data[0][6],
+        data[0][7],
         db_connection,
     )
     cursor.execute(f"SELECT * FROM {BOOK_TABLE_NAME}")
@@ -60,7 +61,7 @@ def test_push_book_data(db_connection):
 def test_push_authors_books_data(db_connection):
     cursor = db_connection.cursor()
     data = [
-        (1, "Patriot Games", "9780425134351", "1992-05-01", "BOOK", "NULL", "Fiction")
+        (1, "Patriot Games", "9780425134351", "1992-05-01", "BOOK", "NULL", "Fiction", "Write a review")
     ]
     push_author_data(["Tom Clancy"], db_connection)
     push_book_data(
@@ -70,6 +71,7 @@ def test_push_authors_books_data(db_connection):
         data[0][4],
         data[0][5],
         data[0][6],
+        data[0][7],
         db_connection,
     )
     push_authors_books_data(["Tom Clancy"], "9780425134351", db_connection)

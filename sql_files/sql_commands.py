@@ -45,6 +45,7 @@ def add_book_manually(connection_to_db):
     format = input("Format (Digital, BOOK): \n")
     date_read = input("Date read (mm/dd/yyyy, NULL): \n")
     categories = input("Categories (Fiction, Nonfiction): \n")
+    review = input("Write a review \n")
     push_author_data(new_author_lst, connection_to_db)
     push_book_data(
         book_name,
@@ -53,6 +54,7 @@ def add_book_manually(connection_to_db):
         format,
         date_read,
         categories,
+        review,
         connection_to_db,
     )
     push_authors_books_data(new_author_lst, isbn, connection_to_db)

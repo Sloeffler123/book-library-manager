@@ -17,4 +17,7 @@ def get_book_data(isbn):
     publication_year = data["items"][0]["volumeInfo"]["publishedDate"]
     format = data["items"][0]["volumeInfo"]["printType"]
     categories = data["items"][0]["volumeInfo"]["categories"][0]
+    print(data)
     return title, author, publication_year, format, categories
+
+get_book_data("9780552150736")
