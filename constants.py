@@ -1,16 +1,16 @@
 DATA_BASE = "users_books.db"
 
-#Author table
+# Author table
 AUTHOR_TABLE_NAME = "authors"
 AUTHOR_NAME_COLUMN = "author_name"
 AUTHOR_ID_COLUMN_NAME = "author_id"
 
-#Authors_books table
+# Authors_books table
 AUTHOR_BOOKS_TABLE_NAME = "authors_books"
 AUTHOR_BOOKS_AUTHOR_ID = "author_id"
 AUTHOR_BOOKS_BOOK_ID = "book_id"
 
-#Book table
+# Book table
 BOOK_TABLE_NAME = "books"
 BOOK_NAME_COLUMN = "book_name"
 BOOK_ISBN_COLUMN = "isbn"

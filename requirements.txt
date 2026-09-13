@@ -1,0 +1,9 @@
+opencv-python
+pyzbar
+pandas
+fastapi
+requests
+pytest
+uvicorn
+ruff
+python-dotenv

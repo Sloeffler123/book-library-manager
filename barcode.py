@@ -1,6 +1,7 @@
 import cv2
 from pyzbar.pyzbar import decode
 
+
 def scan_code():
     cap = cv2.VideoCapture(0)
     num = ""
