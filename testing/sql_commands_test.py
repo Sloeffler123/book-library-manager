@@ -3,7 +3,6 @@ from pathlib import Path
 
 import pytest
 
-from api_files.google_api import get_book_data
 from constants import (
     AUTHOR_BOOKS_TABLE_NAME,
     AUTHOR_TABLE_NAME,
