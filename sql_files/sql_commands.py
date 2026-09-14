@@ -1,5 +1,5 @@
-import sqlite3
 import os
+
 import libsql
 import pandas as pd
 
@@ -19,7 +19,6 @@ from constants import (
     BOOK_PUBLICATION_YEAR_COLUMN_NAME,
     BOOK_REVIEW_COLUMN_NAME,
     BOOK_TABLE_NAME,
-    DATA_BASE,
 )
 from sql_files.write_to_sql import (
     push_author_data,
