@@ -1,5 +1,6 @@
-import sqlite3
+import os
 
+import libsql
 import pandas as pd
 
 from constants import (
@@ -18,7 +19,6 @@ from constants import (
     BOOK_PUBLICATION_YEAR_COLUMN_NAME,
     BOOK_REVIEW_COLUMN_NAME,
     BOOK_TABLE_NAME,
-    DATA_BASE,
 )
 from sql_files.write_to_sql import (
     push_author_data,
@@ -28,8 +28,11 @@ from sql_files.write_to_sql import (
 
 
 def init_connection_to_sql():
-    return sqlite3.connect(DATA_BASE)
-
+    conn = libsql.connect(
+        database=os.environ["TURSO_DATABASE_URL"],
+        auth_token=os.environ["TURSO_AUTH_TOKEN"],
+    )
+    return conn
 
 def commit_and_close_connection(connection_to_db):
     connection_to_db.commit()
