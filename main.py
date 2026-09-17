@@ -18,3 +18,5 @@ def main():
     )
     push_authors_books_data(author, isbn_13, connection)
     connection.close()
+
+main()
