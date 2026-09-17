@@ -18,7 +18,7 @@ from constants import (
 
 
 def push_author_data(author, connection_to_db):
-    cursor = connection_to_db.cursor()
+    cursor = connection_to_db
     any_inserted = False
     for name in author:
         try:
@@ -43,7 +43,7 @@ def push_book_data(
     review,
     connection_to_db,
 ):
-    cursor = connection_to_db.cursor()
+    cursor = connection_to_db
     try:
         sql = f"""INSERT INTO {BOOK_TABLE_NAME} ({BOOK_NAME_COLUMN}, {BOOK_ISBN_COLUMN}, {BOOK_PUBLICATION_YEAR_COLUMN_NAME}, {BOOK_FORMAT_COLUMN_NAME}, {BOOK_DATE_READ_COLUMN_NAME}, {BOOK_CATEGORIES_COLUMN_NAME}, {BOOK_REVIEW_COLUMN_NAME}) VALUES (?, ?, ?, ?, ?, ?, ?)
         """
@@ -60,7 +60,7 @@ def push_book_data(
 
 
 def push_authors_books_data(author_name_list, isbn, connection_to_db):
-    cursor = connection_to_db.cursor()
+    cursor = connection_to_db
     for name in author_name_list:
         sql_string = f"""SELECT {AUTHOR_ID_COLUMN_NAME} FROM {AUTHOR_TABLE_NAME} WHERE {AUTHOR_NAME_COLUMN} = ?
         """
