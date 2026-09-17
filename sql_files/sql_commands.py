@@ -2,7 +2,6 @@ import os
 
 import libsql
 import pandas as pd
-
 from dotenv import load_dotenv
 
 from constants import (
@@ -22,7 +21,6 @@ from constants import (
     BOOK_REVIEW_COLUMN_NAME,
     BOOK_TABLE_NAME,
 )
-
 
 load_dotenv()
 
