@@ -11,9 +11,6 @@ def scan_code():
     num = ""
     while not num.startswith("978"):
         success, img = cap.read()
-        print(success)
-        print(img)
-        print(num)
         if not success:
             break
         

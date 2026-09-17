@@ -3,6 +3,8 @@ import os
 import libsql
 import pandas as pd
 
+from dotenv import load_dotenv
+
 from constants import (
     AUTHOR_BOOKS_AUTHOR_ID,
     AUTHOR_BOOKS_BOOK_ID,
@@ -20,6 +22,10 @@ from constants import (
     BOOK_REVIEW_COLUMN_NAME,
     BOOK_TABLE_NAME,
 )
+
+
+load_dotenv()
+
 from sql_files.write_to_sql import (
     push_author_data,
     push_authors_books_data,
@@ -28,9 +34,11 @@ from sql_files.write_to_sql import (
 
 
 def init_connection_to_sql():
+    turso_database_url = os.getenv("TURSO_DATABASE_URL")
+    turso_auth_token = os.getenv("TURSO_AUTH_TOKEN")
     conn = libsql.connect(
-        database=os.environ["TURSO_DATABASE_URL"],
-        auth_token=os.environ["TURSO_AUTH_TOKEN"],
+        database=turso_database_url,
+        auth_token=turso_auth_token,
     )
     return conn
 
@@ -75,7 +83,7 @@ def check_for_multiple_authors_helper(authors):
 
 
 def add_read_date_to_book(connection_to_db):
-    cursor = connection_to_db.cursor()
+    cursor = connection_to_db
     date_read = input("Date read (yyyy/mm/dd): \n")
     user_input_isbn_title = input("ISBN or Title? (I), (T): ").upper().strip()
     if user_input_isbn_title == "I":
@@ -100,7 +108,7 @@ def add_read_date_to_book(connection_to_db):
 
 
 def add_column_to_table(new_column_name, connection_to_db):
-    cursor = connection_to_db.cursor()
+    cursor = connection_to_db
     cursor.execute(f"ALTER TABLE {BOOK_TABLE_NAME} ADD COLUMN {new_column_name}")
     connection_to_db.commit()
 
@@ -113,7 +121,7 @@ def update_data_in_table(
     filter_value,
     connection_to_db,
 ):
-    cursor = connection_to_db.cursor()
+    cursor = connection_to_db
     sql = f"""
         UPDATE {table_name} SET {column_to_update} = ? WHERE {filter_column} = ?
         """
@@ -122,7 +130,7 @@ def update_data_in_table(
 
 
 def remove_data_from_table(table_name, column_name, data_name, connection_to_db):
-    cursor = connection_to_db.cursor()
+    cursor = connection_to_db
     user_response = input(
         f"Are you sure you want to delete {data_name} from {table_name} in {column_name}? : (Y or N) "
     ).upper()
@@ -134,7 +142,7 @@ def remove_data_from_table(table_name, column_name, data_name, connection_to_db)
 
 
 def filter_data_by_book_name_and_author(connection_to_db):
-    cursor = connection_to_db.cursor()
+    cursor = connection_to_db
     sql = f"""
         SELECT b.{BOOK_NAME_COLUMN}, a.{AUTHOR_NAME_COLUMN} 
         FROM {BOOK_TABLE_NAME} AS b 
@@ -149,7 +157,7 @@ def filter_data_by_book_name_and_author(connection_to_db):
 
 
 def filter_data_by_category_book_name_and_author_name(db_conneciton):
-    cursor = db_conneciton.cursor()
+    cursor = db_conneciton
     sql = f"""
         SELECT b.{BOOK_NAME_COLUMN}, a.{AUTHOR_NAME_COLUMN}, b.{BOOK_CATEGORIES_COLUMN_NAME} 
         FROM {BOOK_TABLE_NAME} AS b 
@@ -162,7 +170,7 @@ def filter_data_by_category_book_name_and_author_name(db_conneciton):
 
 
 def filter_title_author_review_date_read(db_connection):
-    cursor = db_connection.cursor()
+    cursor = db_connection
     sql = f"""
         SELECT b.{BOOK_NAME_COLUMN}, a.{AUTHOR_NAME_COLUMN}, b.{BOOK_REVIEW_COLUMN_NAME}, b.{BOOK_DATE_READ_COLUMN_NAME}
         FROM {BOOK_TABLE_NAME} AS b 
@@ -175,7 +183,7 @@ def filter_title_author_review_date_read(db_connection):
 
 
 def export_all_data_to_csv(db_connection):
-    cursor = db_connection.cursor()
+    cursor = db_connection
     sql = f"""
         SELECT b.{BOOK_NAME_COLUMN}, a.{AUTHOR_NAME_COLUMN}, b.{BOOK_CATEGORIES_COLUMN_NAME}, b.{BOOK_FORMAT_COLUMN_NAME}, b.{BOOK_ISBN_COLUMN}, b.{BOOK_PUBLICATION_YEAR_COLUMN_NAME}, b.{BOOK_DATE_READ_COLUMN_NAME}, b.{BOOK_REVIEW_COLUMN_NAME}
         FROM {BOOK_TABLE_NAME} AS b 
