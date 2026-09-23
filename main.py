@@ -14,7 +14,7 @@ def main():
     book_name, author, publication_year, format, categories = get_book_data(isbn_13)
     push_author_data(author, connection)
     push_book_data(
-        book_name, isbn_13, publication_year, format, "NULL", categories, connection, "Write a review"
+        book_name, isbn_13, publication_year, format, "NULL", categories, "Write a review", connection
     )
     push_authors_books_data(author, isbn_13, connection)
     connection.close()
