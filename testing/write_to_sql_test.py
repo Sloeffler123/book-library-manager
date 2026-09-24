@@ -1,6 +1,6 @@
-import libsql
 from pathlib import Path
 
+import libsql
 import pytest
 
 from constants import (
