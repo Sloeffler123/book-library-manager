@@ -1,4 +1,4 @@
-import sqlite3
+import libsql
 from pathlib import Path
 
 import pytest
@@ -17,7 +17,7 @@ from sql_files.sql_commands import (
     add_column_to_table,
     add_read_date_to_book,
     filter_data_by_book_name_and_author,
-    remove_data_from_table,
+    remove_book_data_from_table,
     update_data_in_table,
 )
 from sql_files.write_to_sql import (
@@ -31,7 +31,7 @@ SCHEMA_PATH = Path(__file__).parent.parent / "schema.sql"
 
 @pytest.fixture
 def db_connection():
-    connection = sqlite3.connect(":memory:")
+    connection = libsql.connect(":memory:")
     schema_sql = SCHEMA_PATH.read_text()
     connection.executescript(schema_sql)
     yield connection
@@ -58,7 +58,7 @@ def test_add_book_manually(db_connection, monkeypatch):
 
     monkeypatch.setattr("builtins.input", lambda _: next(inputs))
 
-    cursor = db_connection
+    cursor = db_connection.cursor()
     add_book_manually(db_connection)
     cursor.execute(f"SELECT * FROM {BOOK_TABLE_NAME}")
     book_result = cursor.fetchall()
@@ -91,7 +91,7 @@ def test_add_book_manually_multiple_authors(db_connection, monkeypatch):
 
     monkeypatch.setattr("builtins.input", lambda _: next(inputs))
 
-    cursor = db_connection
+    cursor = db_connection.cursor()
     add_book_manually(db_connection)
     cursor.execute(f"SELECT * FROM {BOOK_TABLE_NAME}")
     book_result = cursor.fetchall()
@@ -107,7 +107,7 @@ def test_add_book_manually_multiple_authors(db_connection, monkeypatch):
 def test_add_read_date_to_book(db_connection, monkeypatch):
     data = ["2002-05-01"]
     add_book_data_helper(db_connection)
-    cursor = db_connection
+    cursor = db_connection.cursor()
 
     inputs = iter(["2002-05-01", "I", "9780552150736"])
 
@@ -121,7 +121,7 @@ def test_add_read_date_to_book(db_connection, monkeypatch):
 
 def test_add_column_to_table(db_connection):
     add_book_data_helper(db_connection)
-    cursor = db_connection
+    cursor = db_connection.cursor()
     new_table = ["Rating"]
     add_column_to_table(new_table[0], db_connection)
     cursor.execute("SELECT name FROM pragma_table_info('books') WHERE name = 'Rating'")
@@ -131,7 +131,7 @@ def test_add_column_to_table(db_connection):
 
 def test_update_data_in_table(db_connection):
     add_book_data_helper(db_connection)
-    cursor = db_connection
+    cursor = db_connection.cursor()
     new_data = "Loved this book!"
     book_id = 1
     update_data_in_table(
@@ -152,12 +152,12 @@ def test_update_data_in_table(db_connection):
 
 def test_remove_data_from_table(db_connection, monkeypatch):
     add_book_data_helper(db_connection)
-    cursor = db_connection
+    cursor = db_connection.cursor()
     data_to_remove = ["Angels and Demons"]
 
     monkeypatch.setattr("builtins.input", lambda _: "Y")
 
-    remove_data_from_table(
+    remove_book_data_from_table(
         BOOK_TABLE_NAME, BOOK_NAME_COLUMN, data_to_remove[0], db_connection
     )
     result = cursor.fetchone()

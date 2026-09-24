@@ -127,20 +127,29 @@ def update_data_in_table(
     connection_to_db.commit()
 
 
-def remove_data_from_table(table_name, column_name, data_name, connection_to_db):
-    cursor = connection_to_db
+def remove_book_data_from_table(table_name, column_name, data_name, connection_to_db):
+    cursor = connection_to_db.cursor()
     user_response = input(
         f"Are you sure you want to delete {data_name} from {table_name} in {column_name}? : (Y or N) "
     ).upper()
     if user_response == "Y":
         cursor.execute(
-            f"DELETE FROM {table_name} WHERE {column_name} = ?", (data_name,)
+            f"SELECT {BOOK_ID_COLUMN_NAME} FROM {BOOK_TABLE_NAME} WHERE {column_name} = ?", (data_name,)
         )
+        result = cursor.fetchone()
+        if result:
+            book_id = result[0]
+            cursor.execute(
+            f"DELETE FROM {AUTHOR_BOOKS_TABLE_NAME} WHERE {AUTHOR_BOOKS_BOOK_ID} = ?", (book_id,)
+            )
+        cursor.execute(
+                    f"DELETE FROM {table_name} WHERE {column_name} = ?", (data_name,)
+                )
         connection_to_db.commit()
 
 
 def filter_data_by_book_name_and_author(connection_to_db):
-    cursor = connection_to_db
+    cursor = connection_to_db.cursor()
     sql = f"""
         SELECT b.{BOOK_NAME_COLUMN}, a.{AUTHOR_NAME_COLUMN} 
         FROM {BOOK_TABLE_NAME} AS b 
@@ -155,7 +164,7 @@ def filter_data_by_book_name_and_author(connection_to_db):
 
 
 def filter_data_by_category_book_name_and_author_name(db_conneciton):
-    cursor = db_conneciton
+    cursor = db_conneciton.cursor()
     sql = f"""
         SELECT b.{BOOK_NAME_COLUMN}, a.{AUTHOR_NAME_COLUMN}, b.{BOOK_CATEGORIES_COLUMN_NAME} 
         FROM {BOOK_TABLE_NAME} AS b 
@@ -168,7 +177,7 @@ def filter_data_by_category_book_name_and_author_name(db_conneciton):
 
 
 def filter_title_author_review_date_read(db_connection):
-    cursor = db_connection
+    cursor = db_connection.cursor()
     sql = f"""
         SELECT b.{BOOK_NAME_COLUMN}, a.{AUTHOR_NAME_COLUMN}, b.{BOOK_REVIEW_COLUMN_NAME}, b.{BOOK_DATE_READ_COLUMN_NAME}
         FROM {BOOK_TABLE_NAME} AS b 
@@ -181,7 +190,7 @@ def filter_title_author_review_date_read(db_connection):
 
 
 def export_all_data_to_csv(db_connection):
-    cursor = db_connection
+    cursor = db_connection.cursor()
     sql = f"""
         SELECT b.{BOOK_NAME_COLUMN}, a.{AUTHOR_NAME_COLUMN}, b.{BOOK_CATEGORIES_COLUMN_NAME}, b.{BOOK_FORMAT_COLUMN_NAME}, b.{BOOK_ISBN_COLUMN}, b.{BOOK_PUBLICATION_YEAR_COLUMN_NAME}, b.{BOOK_DATE_READ_COLUMN_NAME}, b.{BOOK_REVIEW_COLUMN_NAME}
         FROM {BOOK_TABLE_NAME} AS b 

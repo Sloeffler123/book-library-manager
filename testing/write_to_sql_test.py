@@ -1,4 +1,4 @@
-import sqlite3
+import libsql
 from pathlib import Path
 
 import pytest
@@ -20,7 +20,7 @@ SCHEMA_PATH = Path(__file__).parent.parent / "schema.sql"
 
 @pytest.fixture
 def db_connection():
-    connection = sqlite3.connect(":memory:")
+    connection = libsql.connect(":memory:")
     schema_sql = SCHEMA_PATH.read_text()
     connection.executescript(schema_sql)
     yield connection
@@ -28,7 +28,7 @@ def db_connection():
 
 
 def test_push_author_data(db_connection):
-    cursor = db_connection
+    cursor = db_connection.cursor()
     push_author_data(["Tom Clancy"], db_connection)
     cursor.execute(
         f"SELECT {AUTHOR_NAME_COLUMN} FROM {AUTHOR_TABLE_NAME} WHERE {AUTHOR_NAME_COLUMN} = ?",
@@ -39,7 +39,7 @@ def test_push_author_data(db_connection):
 
 
 def test_push_book_data(db_connection):
-    cursor = db_connection
+    cursor = db_connection.cursor()
     data = [
         (1, "Patriot Games", "9780425134351", "1992-05-01", "BOOK", "NULL", "Fiction", "Write a review")
     ]
@@ -59,7 +59,7 @@ def test_push_book_data(db_connection):
 
 
 def test_push_authors_books_data(db_connection):
-    cursor = db_connection
+    cursor = db_connection.cursor()
     data = [
         (1, "Patriot Games", "9780425134351", "1992-05-01", "BOOK", "NULL", "Fiction", "Write a review")
     ]
