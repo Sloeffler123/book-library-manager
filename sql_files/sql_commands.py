@@ -1,6 +1,8 @@
-import sqlite3
+import os
 
+import libsql
 import pandas as pd
+from dotenv import load_dotenv
 
 from constants import (
     AUTHOR_BOOKS_AUTHOR_ID,
@@ -18,8 +20,10 @@ from constants import (
     BOOK_PUBLICATION_YEAR_COLUMN_NAME,
     BOOK_REVIEW_COLUMN_NAME,
     BOOK_TABLE_NAME,
-    DATA_BASE,
 )
+
+load_dotenv()
+
 from sql_files.write_to_sql import (
     push_author_data,
     push_authors_books_data,
@@ -28,8 +32,13 @@ from sql_files.write_to_sql import (
 
 
 def init_connection_to_sql():
-    return sqlite3.connect(DATA_BASE)
-
+    turso_database_url = os.getenv("TURSO_DATABASE_URL")
+    turso_auth_token = os.getenv("TURSO_AUTH_TOKEN")
+    conn = libsql.connect(
+        database=turso_database_url,
+        auth_token=turso_auth_token,
+    )
+    return conn
 
 def commit_and_close_connection(connection_to_db):
     connection_to_db.commit()
@@ -72,7 +81,7 @@ def check_for_multiple_authors_helper(authors):
 
 
 def add_read_date_to_book(connection_to_db):
-    cursor = connection_to_db.cursor()
+    cursor = connection_to_db
     date_read = input("Date read (yyyy/mm/dd): \n")
     user_input_isbn_title = input("ISBN or Title? (I), (T): ").upper().strip()
     if user_input_isbn_title == "I":
@@ -97,7 +106,7 @@ def add_read_date_to_book(connection_to_db):
 
 
 def add_column_to_table(new_column_name, connection_to_db):
-    cursor = connection_to_db.cursor()
+    cursor = connection_to_db
     cursor.execute(f"ALTER TABLE {BOOK_TABLE_NAME} ADD COLUMN {new_column_name}")
     connection_to_db.commit()
 
@@ -110,7 +119,7 @@ def update_data_in_table(
     filter_value,
     connection_to_db,
 ):
-    cursor = connection_to_db.cursor()
+    cursor = connection_to_db
     sql = f"""
         UPDATE {table_name} SET {column_to_update} = ? WHERE {filter_column} = ?
         """
@@ -118,15 +127,24 @@ def update_data_in_table(
     connection_to_db.commit()
 
 
-def remove_data_from_table(table_name, column_name, data_name, connection_to_db):
+def remove_book_data_from_table(table_name, column_name, data_name, connection_to_db):
     cursor = connection_to_db.cursor()
     user_response = input(
         f"Are you sure you want to delete {data_name} from {table_name} in {column_name}? : (Y or N) "
     ).upper()
     if user_response == "Y":
         cursor.execute(
-            f"DELETE FROM {table_name} WHERE {column_name} = ?", (data_name,)
+            f"SELECT {BOOK_ID_COLUMN_NAME} FROM {BOOK_TABLE_NAME} WHERE {column_name} = ?", (data_name,)
         )
+        result = cursor.fetchone()
+        if result:
+            book_id = result[0]
+            cursor.execute(
+            f"DELETE FROM {AUTHOR_BOOKS_TABLE_NAME} WHERE {AUTHOR_BOOKS_BOOK_ID} = ?", (book_id,)
+            )
+        cursor.execute(
+                    f"DELETE FROM {table_name} WHERE {column_name} = ?", (data_name,)
+                )
         connection_to_db.commit()
 
 

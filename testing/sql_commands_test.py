@@ -1,6 +1,6 @@
-import sqlite3
 from pathlib import Path
 
+import libsql
 import pytest
 
 from constants import (
@@ -17,7 +17,7 @@ from sql_files.sql_commands import (
     add_column_to_table,
     add_read_date_to_book,
     filter_data_by_book_name_and_author,
-    remove_data_from_table,
+    remove_book_data_from_table,
     update_data_in_table,
 )
 from sql_files.write_to_sql import (
@@ -31,7 +31,7 @@ SCHEMA_PATH = Path(__file__).parent.parent / "schema.sql"
 
 @pytest.fixture
 def db_connection():
-    connection = sqlite3.connect(":memory:")
+    connection = libsql.connect(":memory:")
     schema_sql = SCHEMA_PATH.read_text()
     connection.executescript(schema_sql)
     yield connection
@@ -157,7 +157,7 @@ def test_remove_data_from_table(db_connection, monkeypatch):
 
     monkeypatch.setattr("builtins.input", lambda _: "Y")
 
-    remove_data_from_table(
+    remove_book_data_from_table(
         BOOK_TABLE_NAME, BOOK_NAME_COLUMN, data_to_remove[0], db_connection
     )
     result = cursor.fetchone()

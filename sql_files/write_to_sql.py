@@ -1,5 +1,3 @@
-import sqlite3
-
 from constants import (
     AUTHOR_BOOKS_TABLE_NAME,
     AUTHOR_ID_COLUMN_NAME,
@@ -28,7 +26,7 @@ def push_author_data(author, connection_to_db):
             connection_to_db.commit()
             print(f"{name} added to {AUTHOR_TABLE_NAME}\n")
             any_inserted = True
-        except sqlite3.IntegrityError:
+        except ValueError:
             print("author already in db")
     return any_inserted
 
@@ -54,7 +52,7 @@ def push_book_data(
         connection_to_db.commit()
         print(f"{book_name} added to {BOOK_TABLE_NAME}\n")
         return True
-    except sqlite3.IntegrityError:
+    except ValueError:
         print(f"{book_name} already in db")
         return False
 
@@ -77,5 +75,5 @@ def push_authors_books_data(author_name_list, isbn, connection_to_db):
                 f"book {book_id} and author {author_id} added to {AUTHOR_BOOKS_TABLE_NAME}\n"
             )
             connection_to_db.commit()
-        except sqlite3.IntegrityError:
+        except ValueError:
             print("Author_id and book_id already exist")

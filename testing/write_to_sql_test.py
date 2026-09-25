@@ -1,6 +1,6 @@
-import sqlite3
 from pathlib import Path
 
+import libsql
 import pytest
 
 from constants import (
@@ -20,7 +20,7 @@ SCHEMA_PATH = Path(__file__).parent.parent / "schema.sql"
 
 @pytest.fixture
 def db_connection():
-    connection = sqlite3.connect(":memory:")
+    connection = libsql.connect(":memory:")
     schema_sql = SCHEMA_PATH.read_text()
     connection.executescript(schema_sql)
     yield connection
